@@ -325,10 +325,20 @@
 
 <!-- Route Panel Sidebar -->
 <div id="route-panel" class="route-panel">
-  <button id="route-toggle" class="route-toggle" aria-label="切換路線面板">
-    <span class="t-icon"><span class="material-symbols-outlined m-icon">map</span></span>
-    <span class="t-label">路線</span>
-  </button>
+  <div class="sidebar-btn-group" style="display:flex; flex-direction:column; gap:10px; margin-top:auto; margin-bottom:auto; z-index:210;">
+    <button id="route-toggle" class="route-toggle" style="min-height:50px; padding:12px; justify-content:center;" aria-label="迷你地圖">
+      <span class="material-symbols-outlined m-icon">map</span>
+    </button>
+    <button class="route-toggle" style="min-height:50px; padding:12px; justify-content:center;" aria-label="海關行程" onclick="document.getElementById('customs-modal').style.display='flex'">
+      <span class="material-symbols-outlined m-icon">airplane_ticket</span>
+    </button>
+    <button class="route-toggle" style="min-height:50px; padding:12px; justify-content:center;" aria-label="行李清單" onclick="document.getElementById('packing-modal').style.display='flex'">
+      <span class="material-symbols-outlined m-icon">luggage</span>
+    </button>
+    <button class="route-toggle" style="min-height:50px; padding:12px; justify-content:center;" aria-label="自駕須知" onclick="document.getElementById('driving-modal').style.display='flex'">
+      <span class="material-symbols-outlined m-icon">directions_car</span>
+    </button>
+  </div>
   <div class="route-inner" id="route-inner">
     
         <div class="svg-map-wrap">
@@ -1444,5 +1454,852 @@ window.addEventListener('load',function(){
   </div>
 </div>
 <!-- ===== END ADD PIN MODALS ===== -->
+
+<!-- CUSTOMS ITINERARY MODAL -->
+<div id="customs-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:24px;width:90vw;max-width:800px;max-height:90vh;overflow-y:auto;position:relative;">
+    <button onclick="document.getElementById('customs-modal').style.display='none';" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">&times;</button>
+    <h2 style="margin-top:0;margin-bottom:8px;color:#1e293b;font-size:20px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:#00b4d8;">airplane_ticket</span> NZ Itinerary for Customs</h2>
+    <div style="font-size:13px;color:#ef4444;margin-bottom:16px;font-weight:bold;border-bottom:2px solid #e2e8f0;padding-bottom:12px;">
+      💡 若不幸無法走 eGATE，被海關詢問行程的話，請給他看電子機票跟這份
+    </div>
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;text-align:left;">
+      <thead>
+        <tr style="background:#f1f5f9;border-bottom:2px solid #cbd5e1;">
+          <th style="padding:10px;white-space:nowrap;width:90px;min-width:90px;">Date</th>
+          <th style="padding:10px;white-space:nowrap;width:120px;min-width:120px;">City / Location</th>
+          <th style="padding:10px;">Main Activity</th>
+          <th style="padding:10px;">Accommodation / Flight</th>
+          <th style="padding:10px;">Address</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/16</td>
+          <td style="padding:10px;font-weight:bold;">Taipei</td>
+          <td style="padding:10px;">Departure</td>
+          <td style="padding:10px;">Flight: TPE to SYD (CI51)</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;"></td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/17</td>
+          <td style="padding:10px;font-weight:bold;">Queenstown</td>
+          <td style="padding:10px;">Arrival in Queenstown</td>
+          <td style="padding:10px;">Flight: SYD to ZQN (QF123)<br>Ramada Suites by Wyndham Queenstown Remarkables Park</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">24 Hawthorne Drive, Remarkables Park, Queenstown 9300</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/18</td>
+          <td style="padding:10px;font-weight:bold;">Queenstown</td>
+          <td style="padding:10px;">Kiwi Park, Skyline Queenstown</td>
+          <td style="padding:10px;">Ramada Suites by Wyndham Queenstown Remarkables Park</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">24 Hawthorne Drive, Remarkables Park, Queenstown 9300</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/19</td>
+          <td style="padding:10px;font-weight:bold;">Te Anau</td>
+          <td style="padding:10px;">Campervan Pick-up, Glowworm Caves</td>
+          <td style="padding:10px;">Te Anau Lakeview Holiday Park & Motels</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">77 Manapouri Te Anau Highway, Te Anau 9679</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/20</td>
+          <td style="padding:10px;font-weight:bold;">Milford Sound</td>
+          <td style="padding:10px;">Milford Sound Cruise</td>
+          <td style="padding:10px;">Te Anau Lakeview Holiday Park & Motels</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">77 Manapouri Te Anau Highway, Te Anau 9679</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/21</td>
+          <td style="padding:10px;font-weight:bold;">Cromwell</td>
+          <td style="padding:10px;">Drive to Cromwell</td>
+          <td style="padding:10px;">Anderson Park Motel</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">9 Gair Avenue, Cromwell 9310</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/22</td>
+          <td style="padding:10px;font-weight:bold;">Oamaru</td>
+          <td style="padding:10px;">Oamaru Blue Penguin Colony</td>
+          <td style="padding:10px;">Brydone Hotel Oamaru</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">115 Thames Street, Oamaru 9400</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/23</td>
+          <td style="padding:10px;font-weight:bold;">Lake Tekapo</td>
+          <td style="padding:10px;">Church of the Good Shepherd, Stargazing</td>
+          <td style="padding:10px;">Mantra Lake Tekapo</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">1 Beauchamp Place, Lake Tekapo 7999</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/24</td>
+          <td style="padding:10px;font-weight:bold;">Mt Cook</td>
+          <td style="padding:10px;">Hooker Valley Track</td>
+          <td style="padding:10px;">Mt Cook Lodge & Motels</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">Glencoe Access Road, Aoraki/Mount Cook 7999</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/25</td>
+          <td style="padding:10px;font-weight:bold;">Wanaka</td>
+          <td style="padding:10px;">Tasman Glacier Lake Walk, Drive to Wanaka</td>
+          <td style="padding:10px;">Wanaka B&B</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">96 Beacon Point Road, Wanaka 9305</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/26</td>
+          <td style="padding:10px;font-weight:bold;">Wanaka</td>
+          <td style="padding:10px;">Diamond Lake Track, Paddle Wanaka</td>
+          <td style="padding:10px;">Wanaka B&B</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;">96 Beacon Point Road, Wanaka 9305</td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/27</td>
+          <td style="padding:10px;font-weight:bold;">Queenstown / 
+Melbourne</td>
+          <td style="padding:10px;">Departure</td>
+          <td style="padding:10px;">Flight: ZQN to MEL (VA146)<br>Flight: MEL to TPE (CI58)</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;"></td>
+        </tr>
+
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:10px;white-space:nowrap;">2026/09/28</td>
+          <td style="padding:10px;font-weight:bold;">Taipei</td>
+          <td style="padding:10px;">Arrival in Taipei</td>
+          <td style="padding:10px;">Arrive in TPE</td>
+          <td style="padding:10px;color:#64748b;font-size:12px;"></td>
+        </tr>
+
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- PACKING LIST MODAL -->
+<div id="packing-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:24px;width:90vw;max-width:500px;max-height:85vh;overflow-y:auto;position:relative;">
+    <button onclick="document.getElementById('packing-modal').style.display='none';" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">&times;</button>
+    <h2 style="margin-top:0;margin-bottom:16px;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:12px;font-size:20px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:#00b4d8;">luggage</span> 行李打包清單</h2>
+    <p style="font-size:12px;color:#64748b;margin-bottom:16px;">勾選狀態會自動儲存在您的裝置中，下次打開不會消失！</p>
+    <div id="packing-list-container">
+<h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">重要文件與證件</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_0" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">護照、護照影本</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_1" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">國際駕照與台灣駕照正本</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_2" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">信用卡</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_3" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">現金</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_4" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">行程表、清單</div>
+                
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">衣物</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_5" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">保暖外套 / 防風防水外套</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_6" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">衣物 (3-4套)</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_7" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">襪子</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_8" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">內衣褲</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_9" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">毛帽、圍巾、手套</div>
+                
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">盥洗與個人用品</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_10" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">牙刷、牙膏</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>電動牙刷不可拖運</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_11" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">洗浴用品 (洗髮精、沐浴乳)</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>液體不可隨身</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_12" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">大毛巾</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_13" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">護唇膏、護手霜、保濕乳液</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>液體不可隨身</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_14" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">防曬用品</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>液體不可隨身</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_15" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">梳子、刮鬍刀等個人衛生用品</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_16" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">個人常備藥品(需要藥袋)</div>
+                
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">3C 電子產品</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_17" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">手機與充電器</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_18" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">行動電源</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>不可拖運</div>
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">生活與露營/自駕好物</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_19" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">餐具(筷子)</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_20" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">太陽眼鏡</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_21" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">雨傘或輕便雨衣</div>
+                
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">非必要物品</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_22" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">登山鞋</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>需清理鞋底並申報</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_23" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">拖鞋</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_24" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">USB線</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_25" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">耳機</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_26" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">護膝、護腰</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_27" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">頸枕</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_28" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">手表與充電器</div>
+                
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">重要文件與證件</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_29" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">護照</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>確認效期至少六個月以上</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_30" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">紐西蘭 NZeTA證明</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>建議印出紙本備查</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_31" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">澳洲簽證證明</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>如過境或轉機需要</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_32" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">國際駕照與台灣駕照正本</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>租車必備</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_33" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">信用卡</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>必備！務必事先申請國外刷卡 PIN 碼</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_34" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">英文版旅行平安險/不便險證明</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_35" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">行程表</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>紙本及電子檔備份</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_36" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">住宿預訂與租車確認信</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>紙本及電子檔備份</div>
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">衣物 (氣溫 5-18度)</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_37" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">保暖外套 / 防風防水外套</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>洋蔥式穿法為主</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_38" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">保暖衣物</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>發熱衣、毛衣、刷毛上衣</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_39" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">長褲</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>舒適好活動，可備防潑水材質</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_40" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">便鞋</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>營地洗澡或室內穿著</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_41" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">襪子</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>含保暖羊毛襪</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_42" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">內衣褲</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_43" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">毛帽、圍巾、手套</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>毛帽、圍巾、手套</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_44" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">防曬外套</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>緯度高易曬傷</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_45" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">護膝</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>緯度高易曬傷</div>
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">盥洗與個人用品</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_46" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">牙刷、牙膏</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>注意：營地與B&B不一定提供</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_47" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">洗浴用品 (洗髮精、沐浴乳)</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>注意：營地與B&B不一定提供</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_48" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">大毛巾</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>最好自備</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_49" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">護唇膏、護手霜、保濕乳液</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>紐西蘭氣候偏乾</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_50" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">防曬用品</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>防曬乳等</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_51" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">梳子、刮鬍刀</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_52" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">常備藥品</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>感冒藥、腸胃藥、暈車藥等</div>
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">3C 電子產品</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_53" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">手機與充電器、充電線</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_54" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">萬用轉接頭</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>紐西蘭為八字型三孔插座</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_55" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">行動電源</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_56" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">耳機</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>已預付網路費用 3372 元</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_57" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">網卡</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>已預付網路費用 3372 元</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_58" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">手表與充電器</div>
+                
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">生活與露營/自駕好物</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_59" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">筷子</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>自煮或吃泡麵必備</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_60" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">洗衣紙</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>營地洗衣服用</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_61" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">環保購物袋</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>超市採買必備</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_62" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">保冰袋</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>多帶幾個，用於超市採買生鮮及轉移陣地時保鮮</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_63" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">微波煮飯器</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>自煮米飯方便</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_64" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">夾鏈袋、塑膠袋</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>分裝食物或裝髒衣服</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_65" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">太陽眼鏡</div>
+                <div style='font-size:12px;color:#94a3b8;margin-top:2px;'>開車防炫光</div>
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_66" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">手機架</div>
+                
+            </div>
+        </label>
+        
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_67" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">雨傘</div>
+                
+            </div>
+        </label>
+        <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">非必要物品</h3>
+
+        <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <input type="checkbox" id="pack_68" class="pack-check" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;">
+            <div style="margin-left:10px;">
+                <div style="font-size:15px;color:#334155;font-weight:500;">頸枕</div>
+                
+            </div>
+        </label>
+        
+    </div>
+  </div>
+</div>
+
+
+<!-- DRIVING INFO MODAL -->
+<div id="driving-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:24px;width:90vw;max-width:600px;max-height:85vh;overflow-y:auto;position:relative;">
+    <button onclick="document.getElementById('driving-modal').style.display='none';" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">&times;</button>
+    <h2 style="margin-top:0;margin-bottom:16px;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:12px;font-size:20px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:#00b4d8;">directions_car</span> 紐西蘭自駕須知</h2>
+    
+    <!-- 1. 交通規則介紹 -->
+    <h3 style="color:#0284c7;font-size:16px;margin-top:0;border-bottom:1px solid #e2e8f0;padding-bottom:4px;">交通規則介紹</h3>
+    
+    <div style="margin-bottom:12px;">
+      <a href="https://www.nzta.govt.nz/assets/resources/driving-in-nz/docs/driving-in-nz-traditional-chinese.pdf" target="_blank" style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-weight:bold;font-size:14px;"><span class="material-symbols-outlined" style="font-size:18px;color:#0ea5e9;">link</span> 1. 官方文件 (PDF)</a>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <a href="https://nzyouroyster.com/beginner-safe-drive-nz/" target="_blank" style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-weight:bold;font-size:14px;"><span class="material-symbols-outlined" style="font-size:18px;color:#0ea5e9;">link</span> 2. 圓環教學</a>
+      <ul style="font-size:13px;color:#334155;margin-top:8px;padding-left:24px;">
+        <li>順時針繞行且右方優先，要右方沒來車才可進入圓環</li>
+        <li>進入圓環前請依照轉向預先打燈</li>
+        <li>離開圓環時打「左轉燈」</li>
+      </ul>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <a href="https://thl.widen.net/s/fdktqvpnpp/drivesafe_nz_questionnaire" target="_blank" style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-weight:bold;font-size:14px;"><span class="material-symbols-outlined" style="font-size:18px;color:#0ea5e9;">link</span> 3. 考卷</a>
+    </div>
+
+    <!-- 2. 加油站 -->
+    <h3 style="color:#0284c7;font-size:16px;margin-top:20px;border-bottom:1px solid #e2e8f0;padding-bottom:4px;">加油站</h3>
+    <div style="font-size:14px;color:#ef4444;font-weight:bold;margin-bottom:12px;background:#fef2f2;padding:8px;border-radius:6px;">⚠️ 加油站不能用手機!!!</div>
+    
+    <div style="font-size:14px;color:#334155;margin-bottom:12px;">
+      <strong>1. 確認油種：</strong>露營車: 柴油; RAV4: 租車時確認, 油蓋上可能會有寫
+    </div>
+    <div style="font-size:14px;color:#334155;margin-bottom:12px;">
+      <strong>2. 打開油蓋加油：</strong>
+      <ul style="margin-top:4px;padding-left:20px;font-size:13px;">
+        <li>拿起油槍，選擇油品(大部分加油站是不同油品使用不同油槍，但是也有少部份是一支槍按按鈕切換的)。</li>
+        <li>把油槍插入油箱口，扣住扳機就可以加油了</li>
+        <li>想要控制金額的話，可以自己放掉扳機，螢幕會顯示加了多少公升與金額。</li>
+        <li>如果是要加滿的話，油槍會自動跳停。</li>
+      </ul>
+    </div>
+    <div style="font-size:14px;color:#334155;margin-bottom:24px;">
+      <strong>3. 付款：</strong>
+      <ul style="margin-top:4px;padding-left:20px;font-size:13px;">
+        <li>第一種：加完油直接在加油機刷卡</li>
+        <li>第二種：先預刷一筆金額，實際加多少再退回差額 (可能在中島、加油機，或是旁邊商店付款，須提供加油機號碼 pump number)</li>
+      </ul>
+    </div>
+
+    <!-- 3. 路邊停車 -->
+    <h3 style="color:#0284c7;font-size:16px;margin-top:20px;border-bottom:1px solid #e2e8f0;padding-bottom:4px;">路邊停車</h3>
+    <div style="font-size:14px;color:#334155;margin-bottom:12px;">
+      <strong>1. 可停車區域：</strong>
+      <div style="margin-top:4px;padding-left:12px;">
+        畫白線的才可以停車，一般較大的城鎮才有明顯的停車格<br>
+        露營車只能停在限定區域，請參考thl
+      </div>
+    </div>
+    
+    <div style="font-size:14px;color:#334155;margin-bottom:12px;">
+      <strong>2. 標示：</strong>
+      <div style="display:flex;gap:10px;margin-top:10px;margin-bottom:10px;flex-wrap:wrap;">
+        
+        <!-- Sign 1 -->
+        <div style="background:#0a3b88;color:white;padding:15px;border-radius:4px;text-align:center;width:90px;font-family:sans-serif;box-shadow:0 2px 4px rgba(0,0,0,0.2);">
+          <div style="font-size:36px;font-weight:bold;line-height:1;">P</div>
+          <div style="font-size:24px;margin-top:5px;line-height:1;">120</div>
+        </div>
+        
+        <!-- Sign 2 -->
+        <div style="background:#0a3b88;color:white;padding:15px;border-radius:4px;text-align:center;width:90px;font-family:sans-serif;box-shadow:0 2px 4px rgba(0,0,0,0.2);">
+          <div style="font-size:36px;font-weight:bold;line-height:1;">P</div>
+          <div style="font-size:24px;margin-top:5px;line-height:1;">60</div>
+          <div style="font-size:11px;margin-top:5px;">Mon-Fri</div>
+        </div>
+
+        <!-- Sign 3 -->
+        <div style="background:#0a3b88;color:white;padding:10px;border-radius:4px;text-align:center;width:90px;font-family:sans-serif;box-shadow:0 2px 4px rgba(0,0,0,0.2);">
+          <div style="font-size:24px;font-weight:bold;line-height:1;">P$240</div>
+          <div style="font-size:12px;margin-top:8px;">7am - 8pm</div>
+          <div style="font-size:11px;margin-top:2px;">Mon-Sun</div>
+        </div>
+
+        <!-- Sign 4 -->
+        <div style="background:#0a3b88;color:white;padding:10px;border-radius:4px;text-align:center;width:90px;font-family:sans-serif;box-shadow:0 2px 4px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;">
+          <div style="width:60px;height:60px;border-radius:50%;border:8px solid #ef4444;position:relative;background:white;">
+            <div style="position:absolute;width:100%;height:8px;background:#ef4444;top:50%;left:0;transform:translateY(-50%) rotate(45deg);"></div>
+            <div style="position:absolute;width:100%;height:8px;background:#ef4444;top:50%;left:0;transform:translateY(-50%) rotate(-45deg);"></div>
+          </div>
+        </div>
+
+      </div>
+      <ul style="margin-top:8px;padding-left:20px;font-size:13px;line-height:1.6;">
+        <li>(1) 可免費停車120分鐘。</li>
+        <li>(2) 星期一至五可免費停車60分鐘，星期六、日不限時免費停車。</li>
+        <li>(3) 每天早上7點至傍晚8點，需付費停車，最多可停240分鐘，其他時間免費不限時。</li>
+        <li>(4) 此處不可停車。</li>
+      </ul>
+    </div>
+
+    <div style="font-size:14px;color:#334155;">
+      <strong>3. 繳費：</strong>
+      <div style="margin-top:4px;padding-left:12px;line-height:1.6;">
+        採先繳費制度，要預先規劃停留時間，並繳交相對應的停車費用，若有收據應夾在車內的擋風玻璃上
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+// Load saved packing list states
+window.onload = function() {
+    var saved = localStorage.getItem('nzPackingList');
+    if (saved) {
+        var state = JSON.parse(saved);
+        var checkboxes = document.querySelectorAll('.pack-check');
+        checkboxes.forEach(function(cb) {
+            if (state[cb.id]) {
+                cb.checked = true;
+            }
+        });
+    }
+};
+
+window._savePack = function() {
+    var state = {};
+    var checkboxes = document.querySelectorAll('.pack-check');
+    checkboxes.forEach(function(cb) {
+        state[cb.id] = cb.checked;
+    });
+    localStorage.setItem('nzPackingList', JSON.stringify(state));
+};
+</script>
+
 </body>
-</html>
