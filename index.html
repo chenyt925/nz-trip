@@ -300,7 +300,12 @@
         <button id="recenter-btn" class="layer-btn" style="margin-top:8px;" aria-label="置中地圖" title="回到預設視角">
           <span class="material-symbols-outlined">center_focus_strong</span>
         </button>
-        
+        <button id="addpin-btn" class="layer-btn" style="margin-top:8px;" title="新增自訂圖釘">
+          <span class="material-symbols-outlined">add_location_alt</span>
+        </button>
+        <button id="exportpin-btn" class="layer-btn" style="margin-top:8px;" title="匯出自訂圖釘">
+          <span class="material-symbols-outlined">download</span>
+        </button>
         <div id="layer-menu" class="layer-menu">
           <h4>地圖圖層顯示</h4>
           <label><input type="checkbox" id="toggle-route" checked> 🚙 路線軌跡</label>
@@ -1143,7 +1148,7 @@ window.addEventListener('load',function(){
 
     var typeIcons = {
       'attraction': 'landscape',
-      'hotel': 'bed',
+      'hotel': 'home',
       'food': 'restaurant',
       'car': 'directions_car',
       'shopping': 'shopping_cart'
@@ -1183,6 +1188,167 @@ window.addEventListener('load',function(){
 
 
 
+
+    // ===== ADD PIN FEATURE =====
+    window._addPinMode = false;
+    window._pendingPin = null;
+    var _customPins = JSON.parse(localStorage.getItem('nzCustomPins') || '[]');
+
+    window._deleteCustomPin = function(lat, lng, name) {
+      if(!confirm('確定要刪除「' + name + '」嗎？')) return;
+      // Remove from array
+      _customPins = _customPins.filter(function(p) { 
+        return !(p.lat === lat && p.lng === lng && p.name === name);
+      });
+      localStorage.setItem('nzCustomPins', JSON.stringify(_customPins));
+      // Remove marker from map by removing its DOM element
+      var markers = document.querySelectorAll('.custom-marker');
+      markers.forEach(function(el) {
+        if (el._pinData && el._pinData.lat === lat && el._pinData.lng === lng) {
+          el.remove();
+        }
+      });
+      // Close popup
+      var popups = document.querySelectorAll('.mapboxgl-popup');
+      popups.forEach(function(p) { p.remove(); });
+    };
+
+    function _addCustomMarker(stop) {
+      var gLink = 'https://www.google.com/maps/dir/?api=1&destination=' + stop.lat + ',' + stop.lng;
+      
+      // We pass lat, lng, name to the delete function. Use encodeURIComponent to be safe with quotes.
+      var delFunc = "window._deleteCustomPin(" + stop.lat + ", " + stop.lng + ", '" + stop.name.replace(/'/g, "\\'") + "')";
+      
+      var pHtml = '<div style="font-size:15px;font-weight:bold;margin-bottom:8px;color:#1e293b;">' + stop.name + '</div>' +
+        '<div style="display:flex;gap:6px;">' +
+        '<a href="' + gLink + '" target="_blank" style="flex:1;display:inline-flex;align-items:center;justify-content:center;color:#00b4d8;text-decoration:none;font-weight:bold;font-size:13px;background:#f0f9ff;padding:6px;border-radius:6px;border:1px solid #bae6fd;">' +
+        '<span class="material-symbols-outlined" style="font-size:16px;margin-right:4px;">directions_car</span>導航</a>' +
+        '<button onclick="' + delFunc + '" style="flex:1;display:inline-flex;align-items:center;justify-content:center;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:6px;font-weight:bold;font-size:13px;cursor:pointer;font-family:inherit;">' + 
+        '<span class="material-symbols-outlined" style="font-size:16px;margin-right:4px;">delete</span>刪除</button>' +
+        '</div>';
+        
+      var pop = new mapboxgl.Popup({ offset: [0,-15] }).setHTML(pHtml);
+      var el = document.createElement('div');
+      el.className = 'custom-marker';
+      el._pinData = stop; // Attach data for deletion targeting
+      el.style.setProperty('--marker-color', typeColors[stop.type] || '#00b4d8');
+      el.innerHTML = '<span class="material-symbols-outlined">' + (typeIcons[stop.type] || 'location_on') + '</span>';
+      new mapboxgl.Marker({ element: el }).setLngLat([stop.lng, stop.lat]).setPopup(pop).addTo(map);
+    }
+    
+    window._startMapPick = function() {
+        document.getElementById('addpin-overlay').style.display = 'none';
+        window._addPinMode = true;
+        document.getElementById('mapbox-container').style.cursor = 'crosshair';
+        
+        var toast = document.createElement('div');
+        toast.id = 'addpin-toast';
+        toast.innerHTML = '<span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">touch_app</span>請在地圖上點擊想要標記的位置';
+        toast.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:rgba(0,180,216,0.9); color:#fff; padding:12px 20px; border-radius:30px; font-weight:bold; font-size:14px; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,0.2); pointer-events:none; transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+    };
+
+    window._confirmAddPin = async function() {
+      var name = document.getElementById('addpin-name').value.trim();
+      var type = document.getElementById('addpin-type').value;
+      var locInput = document.getElementById('addpin-loc-input').value.trim();
+      var submitBtn = document.getElementById('addpin-submit-btn');
+      
+      if (!name) { alert('請輸入地點名稱！'); return; }
+      
+      var lat, lng;
+      
+      // If we have a pending pin from map click, and input is empty or matches pending
+      if (window._pendingPin && (!locInput || locInput === window._pendingPin.lat + ', ' + window._pendingPin.lng)) {
+          lat = window._pendingPin.lat;
+          lng = window._pendingPin.lng;
+      } else if (locInput) {
+          // Check if it's lat,lng format
+          var coordMatch = locInput.match(/^(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)$/);
+          if (coordMatch) {
+              lat = parseFloat(coordMatch[1]);
+              lng = parseFloat(coordMatch[3]);
+          } else {
+              // It's an address, try geocoding with Mapbox API
+              submitBtn.textContent = '搜尋座標中...';
+              submitBtn.disabled = true;
+              try {
+                  var token = 'pk.eyJ1IjoiY2hlbnl0OTI1IiwiYSI6ImNtdGw4dGl0czAxbHgyeHB5ampoamJvdzcifQ.KsUCOJV1ghzfuXoHDhodGA';
+                  var res = await fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(locInput) + '.json?access_token=' + token + '&country=nz&limit=1');
+                  var data = await res.json();
+                  if (data.features && data.features.length > 0) {
+                      lng = data.features[0].center[0];
+                      lat = data.features[0].center[1];
+                  } else {
+                      alert('找不到這個地址，請嘗試輸入更完整的名稱或使用地圖點擊功能。');
+                      submitBtn.textContent = '✓ 確認新增';
+                      submitBtn.disabled = false;
+                      return;
+                  }
+              } catch (e) {
+                  alert('地名搜尋失敗，請檢查網路連線。');
+                  submitBtn.textContent = '✓ 確認新增';
+                  submitBtn.disabled = false;
+                  return;
+              }
+          }
+      } else {
+          alert('請輸入地址、座標，或點擊地圖選擇位置！'); return;
+      }
+      
+      var pin = { name: name, lat: lat, lng: lng, type: type };
+      _customPins.push(pin);
+      localStorage.setItem('nzCustomPins', JSON.stringify(_customPins));
+      _addCustomMarker(pin);
+      document.getElementById('addpin-overlay').style.display = 'none';
+      
+      // reset
+      document.getElementById('addpin-name').value = '';
+      document.getElementById('addpin-loc-input').value = '';
+      document.getElementById('addpin-map-status').textContent = '在地圖上點擊位置';
+      window._pendingPin = null;
+      submitBtn.textContent = '✓ 確認新增';
+      submitBtn.disabled = false;
+    };
+
+    // Map click handler for add-pin mode
+    map.on('click', function(e) {
+      if (!window._addPinMode) return;
+      
+      var t = document.getElementById('addpin-toast');
+      if(t) t.remove();
+      
+      window._pendingPin = { lat: parseFloat(e.lngLat.lat.toFixed(6)), lng: parseFloat(e.lngLat.lng.toFixed(6)) };
+      
+      document.getElementById('addpin-overlay').style.display = 'flex';
+      var coordStr = window._pendingPin.lat + ', ' + window._pendingPin.lng;
+      document.getElementById('addpin-loc-input').value = coordStr;
+      document.getElementById('addpin-map-status').textContent = '已選擇 (點擊重新選擇)';
+      
+      window._addPinMode = false;
+      document.getElementById('mapbox-container').style.cursor = '';
+      
+      setTimeout(function(){ document.getElementById('addpin-name').focus(); }, 100);
+    });
+
+    // Load persisted custom pins
+    _customPins.forEach(function(p) { _addCustomMarker(p); });
+
+    // Button events
+    document.getElementById('addpin-btn').addEventListener('click', function() {
+      document.getElementById('addpin-overlay').style.display = 'flex';
+      document.getElementById('addpin-name').value = '';
+      document.getElementById('addpin-loc-input').value = '';
+      document.getElementById('addpin-map-status').textContent = '在地圖上點擊位置';
+      window._pendingPin = null;
+    });
+    document.getElementById('exportpin-btn').addEventListener('click', function() {
+      document.getElementById('exportpin-count').textContent = _customPins.length;
+      document.getElementById('exportpin-json').value = JSON.stringify(_customPins, null, 2);
+      document.getElementById('exportpin-overlay').style.display = 'flex';
+    });
+    // ===== END ADD PIN FEATURE =====
+
     // Layer Toggle Logic
     document.getElementById('layer-btn').addEventListener('click', function() {
       document.getElementById('layer-menu').classList.toggle('show');
@@ -1212,6 +1378,71 @@ window.addEventListener('load',function(){
     var mapEl = document.getElementById('map');
     if(mapEl) mapEl.scrollIntoView({behavior: 'smooth', block: 'start'});
   };
+
 </script>
+
+    <p style="font-size:13px; color:#64748b; margin:0 0 12px;">共 <strong id="export-count">0</strong> 個自訂圖釘，儲存於本機瀏覽器中</p>
+    <textarea id="export-json" style="width:100%; box-sizing:border-box; height:180px; border:1.5px solid #e2e8f0; border-radius:10px; padding:10px; font-size:12px; font-family:monospace; resize:none; color:#334155;" readonly></textarea>
+    <div style="display:flex; gap:10px; margin-top:14px;">
+      <button onclick="copyExportJson()" style="flex:1; padding:10px; background:#00b4d8; color:#fff; border:none; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;">📋 複製 JSON</button>
+      <button onclick="clearCustomPins()" style="flex:1; padding:10px; background:#fee2e2; color:#dc2626; border:none; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;">🗑️ 清除所有自訂圖釘</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD PIN MODALS ===== -->
+<!-- ===== ADD PIN MODALS ===== -->
+<div id="addpin-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:32px 28px;width:380px;max-width:92vw;box-shadow:0 20px 60px rgba(0,0,0,0.3);font-family:'Outfit',sans-serif;position:relative;">
+    <button onclick="document.getElementById('addpin-overlay').style.display='none';window._addPinMode=false;document.getElementById('mapbox-container').style.cursor='';" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8;">&times;</button>
+    
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+      <span class="material-symbols-outlined" style="color:#00b4d8;font-size:28px;">add_location_alt</span>
+      <h3 style="margin:0;color:#1e293b;font-size:18px;">新增圖釘</h3>
+    </div>
+    
+    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">地點名稱 *</label>
+    <input id="addpin-name" type="text" placeholder="例：我最愛的咖啡廳" style="width:100%;box-sizing:border-box;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:14px;outline:none;font-family:inherit;" onfocus="this.style.borderColor='#00b4d8'" onblur="this.style.borderColor='#e2e8f0'" />
+    
+    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">位置 (請選擇一種方式輸入) *</label>
+    
+    <!-- Option A: Text Input -->
+    <input id="addpin-loc-input" type="text" placeholder="輸入地址、地名，或經緯度(lat,lng)" style="width:100%;box-sizing:border-box;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:8px;outline:none;font-family:inherit;" onfocus="this.style.borderColor='#00b4d8'" onblur="this.style.borderColor='#e2e8f0'" />
+    
+    <div style="text-align:center;font-size:13px;color:#94a3b8;margin-bottom:8px;font-weight:600;">— 或 —</div>
+    
+    <!-- Option B: Map Click -->
+    <button onclick="window._startMapPick()" style="width:100%;padding:10px;background:#f1f5f9;color:#334155;border:1.5px dashed #cbd5e1;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
+      <span class="material-symbols-outlined" style="font-size:18px;">touch_app</span> <span id="addpin-map-status">在地圖上點擊位置</span>
+    </button>
+    
+    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">類別</label>
+    <select id="addpin-type" style="width:100%;box-sizing:border-box;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:24px;outline:none;font-family:inherit;background:#fff;cursor:pointer;" onfocus="this.style.borderColor='#00b4d8'" onblur="this.style.borderColor='#e2e8f0'">
+      <option value="attraction">&#127956; 景點</option>
+      <option value="food">&#127371; 餐廳 / 咖啡廳</option>
+      <option value="hotel">🏠 住宿</option>
+      <option value="shopping">&#128717; 購物</option>
+      <option value="car">&#128663; 交通 / 租車</option>
+    </select>
+    
+    <button id="addpin-submit-btn" onclick="window._confirmAddPin()" style="width:100%;padding:12px;background:linear-gradient(135deg,#00b4d8,#0077b6);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; 確認新增</button>
+  </div>
+</div>
+<div id="exportpin-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:28px;width:480px;max-width:92vw;box-shadow:0 20px 60px rgba(0,0,0,0.3);font-family:'Outfit',sans-serif;position:relative;">
+    <button onclick="document.getElementById('exportpin-overlay').style.display='none';" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8;">&times;</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <span class="material-symbols-outlined" style="color:#00b4d8;font-size:26px;">download</span>
+      <h3 style="margin:0;color:#1e293b;font-size:17px;">自訂圖釘清單</h3>
+    </div>
+    <p style="font-size:13px;color:#64748b;margin:0 0 12px;">共 <strong id="exportpin-count">0</strong> 個自訂圖釘，儲存於本機瀏覽器</p>
+    <textarea id="exportpin-json" style="width:100%;box-sizing:border-box;height:160px;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;font-size:12px;font-family:monospace;resize:none;color:#334155;" readonly></textarea>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button onclick="var ta=document.getElementById('exportpin-json');ta.select();document.execCommand('copy');alert('已複製！');" style="flex:1;padding:10px;background:#00b4d8;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">複製 JSON</button>
+      <button onclick="if(confirm('確定要清除所有自訂圖釘？')){localStorage.removeItem('nzCustomPins');alert('已清除，請重新整理頁面。');document.getElementById('exportpin-overlay').style.display='none';}" style="flex:1;padding:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">清除所有圖釘</button>
+    </div>
+  </div>
+</div>
+<!-- ===== END ADD PIN MODALS ===== -->
 </body>
 </html>
