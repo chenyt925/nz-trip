@@ -336,6 +336,10 @@
 <button aria-label="自駕須知" class="route-toggle" onclick="document.getElementById('driving-modal').style.display='flex'" style="min-height:50px; padding:12px; justify-content:center;">
 <span class="material-symbols-outlined m-icon">directions_car</span>
 </button>
+<button aria-label="記帳" class="route-toggle" onclick="document.getElementById('expense-modal').style.display='flex'; expRenderList();" style="min-height:50px; padding:12px; justify-content:center;">
+<span class="material-symbols-outlined m-icon" style="color:#10b981;">account_balance_wallet</span>
+</button>
+</div>
 </div>
 <div class="route-inner" id="route-inner">
 <div class="svg-map-wrap">
@@ -1439,6 +1443,64 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 </div>
 </div>
 </div>
+<!-- EXPENSE MODAL -->
+<div id="expense-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;font-family:'Noto Sans TC',sans-serif;">
+<div style="background:#fff;border-radius:16px;padding:24px;width:90vw;max-width:500px;max-height:85vh;overflow-y:auto;position:relative;display:flex;flex-direction:column;">
+<button onclick="document.getElementById('expense-modal').style.display='none';" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">&times;</button>
+<h3 style="margin-top:0;margin-bottom:16px;color:#1e293b;display:flex;align-items:center;gap:8px;">
+    <span class="material-symbols-outlined" style="color:#10b981;">account_balance_wallet</span> 旅費記帳
+</h3>
+<div style="display:flex;gap:10px;margin-bottom:16px;">
+    <button onclick="expToggleTab('list')" id="exp-tab-list" style="flex:1;padding:8px;border:none;border-radius:8px;background:#10b981;color:#fff;font-weight:bold;cursor:pointer;">記帳清單</button>
+    <button onclick="expToggleTab('rates')" id="exp-tab-rates" style="flex:1;padding:8px;border:1px solid #cbd5e1;border-radius:8px;background:#f8fafc;color:#475569;font-weight:bold;cursor:pointer;">匯率設定</button>
+</div>
+
+<!-- 匯率設定面板 -->
+<div id="exp-rates-panel" style="display:none; flex-direction:column; gap:10px;">
+    <p style="margin:0;font-size:14px;color:#64748b;">請設定 1 外幣等於多少台幣 (TWD)</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="exp-rates-container"></div>
+    <button onclick="expSaveRates()" style="padding:10px;background:#10b981;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:10px;">儲存匯率</button>
+</div>
+
+<!-- 記帳清單面板 -->
+<div id="exp-list-panel" style="display:flex; flex-direction:column; gap:16px;">
+    <div style="background:#f1f5f9;padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:8px;">
+            <input type="date" id="exp-date" style="flex:1;padding:8px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;">
+            <select id="exp-cat" style="flex:1;padding:8px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;">
+                <option value="食物">🍔 食物</option>
+                <option value="交通">🚌 交通</option>
+                <option value="住宿">🏨 住宿</option>
+                <option value="門票">🎫 門票</option>
+                <option value="購物">🛍️ 購物</option>
+                <option value="其他">📝 其他</option>
+            </select>
+        </div>
+        <input type="text" id="exp-detail" placeholder="細項 (例: 晚餐拉麵)" style="padding:8px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;">
+        <div style="display:flex;gap:8px;">
+            <input type="number" id="exp-price" placeholder="金額" style="flex:2;padding:8px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;" step="0.01">
+            <select id="exp-currency" style="flex:1;padding:8px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;">
+                <option value="TWD">TWD</option>
+                <option value="JPY">JPY</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="NZD">NZD</option>
+            </select>
+        </div>
+        <button onclick="expAdd()" style="padding:10px;background:#10b981;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">新增紀錄</button>
+    </div>
+    
+    <div id="exp-items" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding-right:4px;"></div>
+    
+    <div style="border-top:2px dashed #cbd5e1;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:20px;font-weight:bold;color:#1e293b;" id="exp-total">總計: NT$ 0</div>
+        <button onclick="expExportCSV()" style="padding:8px 12px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> 匯出</button>
+    </div>
+</div>
+</div>
+</div>
+
 <!-- PACKING LIST MODAL -->
 <div id="packing-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
 <div style="background:#fff;border-radius:16px;padding:24px;width:90vw;max-width:500px;max-height:85vh;overflow-y:auto;position:relative;">
@@ -1650,18 +1712,10 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 </div>
 </label>
 
-
-<label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_24" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
-<div style="margin-left:10px;">
-<div style="font-size:15px;color:#334155;font-weight:500;">空水瓶 or 保溫瓶</div>
-</div>
-</label>
-
 <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">非必要物品</h3>
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_25" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_24" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">登山鞋</div>
 <div style="font-size:12px;color:#94a3b8;margin-top:2px;">需清理鞋底並申報</div>
@@ -1670,7 +1724,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_26" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_25" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">拖鞋</div>
 </div>
@@ -1678,7 +1732,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_27" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_26" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">USB線</div>
 <div style="font-size:12px;color:#94a3b8;margin-top:2px;">車上可以用</div>
@@ -1687,7 +1741,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_28" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_27" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">耳機、充電器</div>
 </div>
@@ -1695,7 +1749,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_29" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_28" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">護膝、護腰</div>
 </div>
@@ -1703,7 +1757,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_30" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_29" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">頸枕</div>
 </div>
@@ -1711,7 +1765,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_31" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_30" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">手表與充電器</div>
 </div>
@@ -1719,7 +1773,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_32" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_31" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">暖暖包</div>
 </div>
@@ -1727,7 +1781,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_33" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_32" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">輕便背包</div>
 </div>
@@ -1735,24 +1789,16 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_34" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_33" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">電子書 / 平板</div>
-</div>
-</label>
-
-
-<label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_35" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
-<div style="margin-left:10px;">
-<div style="font-size:15px;color:#334155;font-weight:500;">購物袋</div>
 </div>
 </label>
 
 <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">團長物品</h3>
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_36" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_34" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">英文保險單</div>
 </div>
@@ -1760,7 +1806,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_37" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_35" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">住宿訂單*7</div>
 </div>
@@ -1768,7 +1814,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_38" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_36" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">取車單*2</div>
 </div>
@@ -1776,7 +1822,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_39" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_37" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">汽車保險單</div>
 </div>
@@ -1784,7 +1830,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_40" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_38" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">觀星行程</div>
 </div>
@@ -1792,7 +1838,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_41" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_39" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">遊船行程</div>
 </div>
@@ -1800,7 +1846,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_42" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_40" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">電子機票</div>
 </div>
@@ -1808,7 +1854,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_43" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_41" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">車用手機架</div>
 </div>
@@ -1816,7 +1862,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_44" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_42" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">插座轉接頭*3</div>
 </div>
@@ -1824,7 +1870,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_45" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_43" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">SIM卡*3</div>
 </div>
@@ -1832,7 +1878,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_46" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_44" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">微波煮飯器</div>
 </div>
@@ -1840,7 +1886,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_47" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_45" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">保鮮盒</div>
 </div>
@@ -1848,15 +1894,15 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_48" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_46" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
-<div style="font-size:15px;color:#334155;font-weight:500;">保冰袋 / 購物袋</div>
+<div style="font-size:15px;color:#334155;font-weight:500;">保冰袋</div>
 </div>
 </label>
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_49" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_47" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">保鮮膜</div>
 </div>
@@ -1864,7 +1910,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_50" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_48" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">食物剪</div>
 </div>
@@ -1872,7 +1918,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_51" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_49" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">常備藥物</div>
 </div>
@@ -1880,7 +1926,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_52" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_50" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">沖繩鹽</div>
 </div>
@@ -1888,7 +1934,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_53" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_51" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">咖哩粉</div>
 </div>
@@ -1898,7 +1944,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">基本食物</h3>
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_54" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_52" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">米</div>
 <div style="font-size:12px;color:#94a3b8;margin-top:2px;">500g</div>
@@ -1907,7 +1953,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_55" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_53" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">雞蛋</div>
 <div style="font-size:12px;color:#94a3b8;margin-top:2px;">12顆左右</div>
@@ -1916,7 +1962,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_56" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_54" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">絞肉</div>
 </div>
@@ -1924,7 +1970,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_57" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_55" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">青菜 / 沙拉</div>
 </div>
@@ -1932,7 +1978,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_58" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_56" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">麵包 / 吐司</div>
 </div>
@@ -1940,7 +1986,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_59" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_57" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">咖啡包</div>
 </div>
@@ -1948,7 +1994,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_60" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_58" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">鮮奶</div>
 </div>
@@ -1956,7 +2002,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_61" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_59" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">櫛瓜</div>
 </div>
@@ -1964,7 +2010,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_62" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_60" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">培根 / 火腿</div>
 </div>
@@ -1972,7 +2018,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_63" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_61" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">油</div>
 </div>
@@ -1980,7 +2026,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_64" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_62" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">罐頭濃湯</div>
 </div>
@@ -1988,7 +2034,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_65" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_63" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">牛排</div>
 </div>
@@ -1996,7 +2042,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_66" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_64" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">羊排</div>
 </div>
@@ -2004,7 +2050,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_67" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_65" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">煙燻鮭魚</div>
 </div>
@@ -2012,7 +2058,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_68" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_66" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">玉米罐頭</div>
 </div>
@@ -2020,7 +2066,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_69" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_67" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">奶油</div>
 </div>
@@ -2028,7 +2074,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_70" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_68" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">水果</div>
 </div>
@@ -2036,7 +2082,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_71" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_69" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">優格</div>
 </div>
@@ -2044,7 +2090,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_72" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_70" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">起司</div>
 </div>
@@ -2052,7 +2098,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_73" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_71" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">泡麵</div>
 </div>
@@ -2061,7 +2107,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">用品</h3>
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_74" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_72" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">防蚊液</div>
 <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Sandfly</div>
@@ -2071,7 +2117,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">義大利麵</h3>
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_75" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_73" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">麵條</div>
 </div>
@@ -2079,7 +2125,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_76" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_74" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">義大利麵醬 or 白醬</div>
 </div>
@@ -2087,7 +2133,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_77" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_75" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">番茄</div>
 </div>
@@ -2095,7 +2141,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_78" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_76" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">洋蔥</div>
 </div>
@@ -2104,7 +2150,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">咖哩</h3>
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_79" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_77" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">咖哩塊</div>
 </div>
@@ -2112,7 +2158,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_80" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_78" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">紅蘿蔔</div>
 </div>
@@ -2120,7 +2166,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_81" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_79" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">馬鈴薯</div>
 </div>
@@ -2128,7 +2174,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_82" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_80" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">洋蔥</div>
 </div>
@@ -2136,7 +2182,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_83" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_81" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">雞肉</div>
 </div>
@@ -2145,7 +2191,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 <h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">味噌湯</h3>
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_84" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_82" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">味噌</div>
 </div>
@@ -2153,9 +2199,26 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_85" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_83" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">海帶</div>
+</div>
+</label>
+
+
+<label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+<input class="pack-check" id="pack_84" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<div style="margin-left:10px;">
+<div style="font-size:15px;color:#334155;font-weight:500;">豆腐</div>
+</div>
+</label>
+
+<h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">韓式火鍋(亞洲超市)</h3>
+
+<label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+<input class="pack-check" id="pack_85" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<div style="margin-left:10px;">
+<div style="font-size:15px;color:#334155;font-weight:500;">泡菜</div>
 </div>
 </label>
 
@@ -2167,26 +2230,9 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 </div>
 </label>
 
-<h3 style="margin:20px 0 10px 0;font-size:16px;color:#0284c7;background:#f0f9ff;padding:6px 12px;border-radius:6px;position:sticky;top:-1px;z-index:2;">韓式火鍋(亞洲超市)</h3>
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
 <input class="pack-check" id="pack_87" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
-<div style="margin-left:10px;">
-<div style="font-size:15px;color:#334155;font-weight:500;">泡菜</div>
-</div>
-</label>
-
-
-<label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_88" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
-<div style="margin-left:10px;">
-<div style="font-size:15px;color:#334155;font-weight:500;">豆腐</div>
-</div>
-</label>
-
-
-<label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_89" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">肉片</div>
 </div>
@@ -2194,7 +2240,7 @@ Melbourne</td><td style="padding:10px;">Departure</td><td style="padding:10px;">
 
 
 <label style="display:flex;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
-<input class="pack-check" id="pack_90" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
+<input class="pack-check" id="pack_88" onchange="window._savePack()" style="margin-top:4px;width:18px;height:18px;accent-color:#00b4d8;" type="checkbox"/>
 <div style="margin-left:10px;">
 <div style="font-size:15px;color:#334155;font-weight:500;">年糕</div>
 </div>
@@ -2330,5 +2376,124 @@ window._savePack = function() {
     });
     localStorage.setItem('nzPackingList', JSON.stringify(state));
 };
+</script>
+<script>
+// --- Expense Tracker ---
+let expRates = JSON.parse(localStorage.getItem('trip_rates')) || {
+    'JPY': 0.21, 'USD': 32.0, 'EUR': 34.5, 'GBP': 40.0, 'NZD': 19.5
+};
+let expData = JSON.parse(localStorage.getItem('trip_expenses')) || [];
+
+function expToggleTab(tab) {
+    const listPanel = document.getElementById('exp-list-panel');
+    const ratesPanel = document.getElementById('exp-rates-panel');
+    const listBtn = document.getElementById('exp-tab-list');
+    const ratesBtn = document.getElementById('exp-tab-rates');
+    
+    if (tab === 'list') {
+        listPanel.style.display = 'flex'; ratesPanel.style.display = 'none';
+        listBtn.style.background = '#10b981'; listBtn.style.color = '#fff'; listBtn.style.border = 'none';
+        ratesBtn.style.background = '#f8fafc'; ratesBtn.style.color = '#475569'; ratesBtn.style.border = '1px solid #cbd5e1';
+        expRenderList();
+    } else {
+        listPanel.style.display = 'none'; ratesPanel.style.display = 'flex';
+        ratesBtn.style.background = '#10b981'; ratesBtn.style.color = '#fff'; ratesBtn.style.border = 'none';
+        listBtn.style.background = '#f8fafc'; listBtn.style.color = '#475569'; listBtn.style.border = '1px solid #cbd5e1';
+        expRenderRates();
+    }
+}
+
+function expRenderRates() {
+    const container = document.getElementById('exp-rates-container');
+    container.innerHTML = '';
+    ['JPY', 'USD', 'EUR', 'GBP', 'NZD'].forEach(cur => {
+        container.innerHTML += `<div style="display:flex;align-items:center;gap:8px;"><span style="font-weight:bold;width:40px;">${cur}</span><input type="number" id="rate-${cur}" value="${expRates[cur]}" step="0.01" style="flex:1;padding:6px;border:1px solid #cbd5e1;border-radius:4px;"></div>`;
+    });
+}
+
+function expSaveRates() {
+    ['JPY', 'USD', 'EUR', 'GBP', 'NZD'].forEach(cur => {
+        expRates[cur] = parseFloat(document.getElementById(`rate-${cur}`).value) || 0;
+    });
+    localStorage.setItem('trip_rates', JSON.stringify(expRates));
+    alert('匯率已儲存！');
+    expToggleTab('list');
+}
+
+function expAdd() {
+    const date = document.getElementById('exp-date').value;
+    const cat = document.getElementById('exp-cat').value;
+    const detail = document.getElementById('exp-detail').value.trim();
+    const price = parseFloat(document.getElementById('exp-price').value);
+    const currency = document.getElementById('exp-currency').value;
+    
+    if(!detail || isNaN(price)) { alert('請輸入細項與金額！'); return; }
+    
+    expData.push({ id: Date.now(), date, cat, detail, price, currency });
+    localStorage.setItem('trip_expenses', JSON.stringify(expData));
+    
+    document.getElementById('exp-detail').value = '';
+    document.getElementById('exp-price').value = '';
+    expRenderList();
+}
+
+function expDelete(id) {
+    if(confirm('確定刪除此紀錄？')) {
+        expData = expData.filter(x => x.id !== id);
+        localStorage.setItem('trip_expenses', JSON.stringify(expData));
+        expRenderList();
+    }
+}
+
+function expRenderList() {
+    const container = document.getElementById('exp-items');
+    container.innerHTML = '';
+    let totalTwd = 0;
+    
+    expData.sort((a,b) => (a.date > b.date ? -1 : 1)).forEach(item => {
+        let twdPrice = item.price;
+        if(item.currency !== 'TWD') twdPrice = item.price * (expRates[item.currency] || 1);
+        totalTwd += twdPrice;
+        
+        container.innerHTML += `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <span style="font-size:12px;background:#f1f5f9;padding:2px 6px;border-radius:4px;color:#64748b;">${item.date || '無日期'}</span>
+                        <span style="font-size:12px;font-weight:bold;color:#0ea5e9;">${item.cat}</span>
+                    </div>
+                    <div style="font-size:14px;font-weight:500;color:#1e293b;">${item.detail}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="text-align:right;">
+                        <div style="font-size:15px;font-weight:bold;color:#0f172a;">${item.price.toLocaleString()} ${item.currency}</div>
+                        ${item.currency !== 'TWD' ? `<div style="font-size:11px;color:#94a3b8;">≈ NT$${Math.round(twdPrice).toLocaleString()}</div>` : ''}
+                    </div>
+                    <button onclick="expDelete(${item.id})" style="background:none;border:none;color:#ef4444;cursor:pointer;padding:4px;"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
+                </div>
+            </div>`;
+    });
+    
+    if(expData.length === 0) container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;">尚無記帳紀錄</div>';
+    document.getElementById('exp-total').innerText = '總計: NT$ ' + Math.round(totalTwd).toLocaleString();
+}
+
+function expExportCSV() {
+    if(expData.length === 0) return alert('沒有紀錄可匯出');
+    let csv = '日期,分類,細項,金額,幣別,約當台幣\n';
+    expData.forEach(item => {
+        let twdPrice = item.price;
+        if(item.currency !== 'TWD') twdPrice = item.price * (expRates[item.currency] || 1);
+        csv += `${item.date},${item.cat},"${item.detail.replace(/"/g, '""')}",${item.price},${item.currency},${Math.round(twdPrice)}\n`;
+    });
+    const blob = new Blob(["\ufeff"+csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "trip_expenses.csv";
+    link.click();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('exp-date').valueAsDate = new Date();
+});
 </script>
 </body></html>
